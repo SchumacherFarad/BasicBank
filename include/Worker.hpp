@@ -1,3 +1,4 @@
+#pragma once
 #include "Customer.hpp"
 
 
@@ -9,7 +10,6 @@ class Worker: public Customer{
     public:
         Worker(double balance, string iban, string name, string surname, string password, double salary);
         Worker(double balance, string iban, string name, string surname, string password);
-        ~Worker();
         void giveRaise(double percentage);
         void addSalarytoBalance();
         double getSalary();

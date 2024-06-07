@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 
@@ -14,7 +15,6 @@ class Customer{
         string password;
     public:
         Customer(double balance, string iban, string name, string surname, string password);
-        ~Customer();
         Customer();
         void deposit(double money);
         void withdraw(double money);

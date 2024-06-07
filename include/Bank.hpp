@@ -1,9 +1,11 @@
+#pragma once
 #include <iostream>
 #include <vector>
 #include "Customer.hpp"
 #include "Worker.hpp"
 
-string lastiban = "TR000000000000000000000001";
+
+extern string lastiban;
 
 class Bank
 {

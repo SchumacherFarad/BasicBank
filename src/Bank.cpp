@@ -5,6 +5,7 @@
 #include "Bank.hpp"
 using namespace std;
 
+string lastiban;
 void Bank::readPeople(string file)
 {
     ifstream readFile;
@@ -26,17 +27,19 @@ void Bank::readPeople(string file)
         surname = cell;
         getline(lineStream, cell, ',');
         balance = stod(cell);
-        getline(lineStream, cell, ',');
-        password = cell;
         if (type == "Worker")
         {
             getline(lineStream, cell, ',');
+            password = cell;
+            getline(lineStream, cell, '\r');
             salary = stod(cell);
             Worker *worker_to_add = new Worker(balance, iban, name, surname, password, salary);
             workers.push_back(worker_to_add);
         }
         else
         {
+            getline(lineStream, cell, '\r');
+            password = cell;
             Customer *customer_to_add = new Customer(balance, iban, name, surname, password);
             customers.push_back(customer_to_add);
         }
@@ -51,11 +54,11 @@ void Bank::writePeople(string file)
     writeFile.open(file);
     for (int i = 0; i < workers.size(); i++)
     {
-        writeFile << workers[i]->getType() << ',' << workers[i]->getIban() << ',' << workers[i]->getName() << ',' << workers[i]->getSurname() << ',' << workers[i]->getBalance() << ',' << workers[i]->getSalary();
+        writeFile << workers[i]->getType() << ',' << workers[i]->getIban() << ',' << workers[i]->getName() << ',' << workers[i]->getSurname() << ',' << workers[i]->getBalance()<< ',' << customers[i]->getPassword() << ',' << workers[i]->getSalary();
     }
     for (int i = 0; i < customers.size(); i++)
     {
-        writeFile << customers[i]->getType() << ',' << customers[i]->getIban() << ',' << customers[i]->getName() << ',' << customers[i]->getSurname() << ',' << customers[i]->getBalance();
+        writeFile << customers[i]->getType() << ',' << customers[i]->getIban() << ',' << customers[i]->getName() << ',' << customers[i]->getSurname() << ',' << customers[i]->getBalance()<< ',' << customers[i]->getPassword();
     }
 }
 
@@ -77,4 +80,13 @@ void Bank::addCustomer(string name, string surname, string pass, double tempbal)
     Customer* customer_to_add = new Customer(tempbal, lastiban, name, surname, pass);
     this->get_customers()->push_back(customer_to_add);
     lastiban = lastiban = "TR" + '0'*(24-to_string(stoll(lastiban.substr(2,24))+1).size()) + to_string(stoll(lastiban.substr(2,24))+1);
+}
+
+Bank::Bank(){
+    customers = {};
+    workers = {};
+}
+Bank::~Bank(){
+    customers.clear();
+    workers.clear();
 }

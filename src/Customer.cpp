@@ -11,6 +11,14 @@ Customer::Customer(double balance, string iban, string name, string surname, str
     this->password = password;
 }
 
+Customer::Customer(){
+    this->type = "Customer";
+    this->name = "";
+    this->surname = "";
+    this->password = "123456";
+    this->balance = 0.00;
+}
+
 void Customer::deposit(double money){
     this->balance += money;
 }
@@ -37,4 +45,8 @@ string Customer::getName(){
 
 string Customer::getSurname(){
     return this->surname;
+}
+
+string Customer::getPassword(){
+    return this->password;
 }
