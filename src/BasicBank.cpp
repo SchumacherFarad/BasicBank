@@ -24,7 +24,7 @@ int createAccount()
     cin >> tempbal;
     cout << "Are you working for us? [Y/n]: ";
     cin >> workinp;
-    while (workinp != "Y" || workinp != "n")
+    while (workinp != "Y" && workinp != "n")
     {
         cout << "You entered a wrong key. Please Try Again: ";
         cin >> workinp;
@@ -50,7 +50,7 @@ int login()
     cout << "L -- Login To your account" << "\n";
     cout << "C -- Create an account" << "\n";
     cin >> logorcre;
-    while (logorcre != "L" || logorcre != "C")
+    while (logorcre != "L" && logorcre != "C")
     {
         cout << "You wrote an unvalid input! Please try again" << "\n";
         cout << "L -- Login To your account" << "\n";
@@ -98,14 +98,31 @@ int login()
         for (int i = 0; i < MAX_TRIES; i++)
         {
             cin >> logpass;
-            if (bank.get_customers()->at(index)->getPassword() == logpass)
+            if (!isbankworker)
             {
-                cout << "Logged in succesfully" << "\n";
-                return index;
+                if (bank.get_customers()->at(index)->getPassword() == logpass)
+                {
+                    cout << "Logged in succesfully" << "\n";
+                    isRunning = true;
+                    return index;
+                }
+                else
+                {
+                    cout << "Wrong Password!" << "\n";
+                }
             }
             else
             {
-                cout << "Wrong Password!" << "\n";
+                if (bank.get_workers()->at(index)->getPassword() == logpass)
+                {
+                    cout << "Logged in succesfully" << "\n";
+                    isRunning = true;
+                    return index;
+                }
+                else
+                {
+                    cout << "Wrong Password!" << "\n";
+                }
             }
         }
         cout << "Login Failed! Account Blocked!" << "\n";
@@ -120,11 +137,9 @@ int login()
     return -1;
 }
 
-
-
 int main()
 {
-    bank.readPeople("People.csv");
+    bank.readPeople("O:/ITU/GITHUB/BasicBank/BasicBank/src/People.csv");
     cout << "Welcome to the YatırBank" << "\n\n";
     int index = login();
     int choice;
@@ -198,12 +213,13 @@ int main()
         case 4:
             if (isbankworker)
             {
-                bank.get_workers()->at(index)->getSalary();
+                bank.get_workers()->at(index)->addSalarytoBalance();
             }
             else
             {
                 cout << "You entered an invalid input. Please try again.";
             }
+            break;
         case 9:
             isRunning = false;
             break;
@@ -212,5 +228,5 @@ int main()
             break;
         }
     }
-    bank.writePeople("People.csv");
+    bank.writePeople("O:/ITU/GITHUB/BasicBank/BasicBank/src/People.csv");
 }
