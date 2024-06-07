@@ -4,84 +4,123 @@
 #include "Worker.hpp"
 
 using namespace std;
-bool isRunning;
+
+bool isRunning, isbankworker;
 Bank bank;
 const int MAX_TRIES = 3;
 
+int createAccount()
+{
+    string tempname, tempsurname, temppass;
+    double tempbal;
+    string workinp;
+    cout << "Please enter your Name: ";
+    cin >> tempname;
+    cout << "Please enter your Surname: ";
+    cin >> tempsurname;
+    cout << "Please enter your Password: ";
+    cin >> temppass;
+    cout << "How much money do you want to deposit first: ";
+    cin >> tempbal;
+    cout << "Are you working for us? [Y/n]: ";
+    cin >> workinp;
+    while (workinp != "Y" || workinp != "n")
+    {
+        cout << "You entered a wrong key. Please Try Again: ";
+        cin >> workinp;
+    }
+    if (workinp == "Y")
+    {
+        bank.addWorker(tempname, tempsurname, temppass, tempbal);
+        cout << "Thanks for creating account!" << "\n";
+        return bank.get_workers()->size() - 1;
+    }
+    else
+    {
+        bank.addCustomer(tempname, tempsurname, temppass, tempbal);
+        cout << "Thanks for creating account!" << "\n";
+        return bank.get_customers()->size() - 1;
+    }
+    return -1;
+}
+
 int login()
 {
-    string logiban, logpass;
-    int index, tries = 0;
-    cout << "Please login to your account" << "\n";
-    cout << "Iban: ";
-    cin >> logiban;
-    bool validib = false;
-    while (!validib)
+    string logorcre;
+    cout << "L -- Login To your account" << "\n";
+    cout << "C -- Create an account" << "\n";
+    cin >> logorcre;
+    while (logorcre != "L" || logorcre != "C")
     {
-        for (int i = 0; i < bank.get_customers()->size(); i++)
+        cout << "You wrote an unvalid input! Please try again" << "\n";
+        cout << "L -- Login To your account" << "\n";
+        cout << "C -- Create an account" << "\n";
+        cin >> logorcre;
+    }
+
+    string logiban, logpass;
+    int index;
+    if (logorcre == "L")
+    {
+        cout << "Please login to your account" << "\n";
+        cout << "Iban: ";
+        cin >> logiban;
+        bool validib = false;
+        while (!validib)
         {
-            if (bank.get_customers()->at(i)->getIban() == logiban)
+            for (int i = 0; i < static_cast<int>(bank.get_customers()->size()); i++)
             {
-                validib = true;
-                index = i;
+                if (bank.get_customers()->at(i)->getIban() == logiban)
+                {
+                    validib = true;
+                    index = i;
+                    isbankworker = false;
+                }
             }
-            else
+            for (int i = 0; i < static_cast<int>(bank.get_workers()->size()); i++)
+            {
+                if (bank.get_workers()->at(i)->getIban() == logiban)
+                {
+                    validib = true;
+                    index = i;
+                    isbankworker = true;
+                }
+            }
+
+            if (!validib)
             {
                 cout << "The Iban that you entered is not valid. Please enter another" << "\n";
                 cout << "Iban: ";
                 cin >> logiban;
             }
         }
+        cout << "Password:" << "\n";
+        for (int i = 0; i < MAX_TRIES; i++)
+        {
+            cin >> logpass;
+            if (bank.get_customers()->at(index)->getPassword() == logpass)
+            {
+                cout << "Logged in succesfully" << "\n";
+                return index;
+            }
+            else
+            {
+                cout << "Wrong Password!" << "\n";
+            }
+        }
+        cout << "Login Failed! Account Blocked!" << "\n";
+        isRunning = false;
+        return -1;
     }
-    cout << "Password:" << "\n";
-    for (int i = 0; i < MAX_TRIES; i++)
+    if (logorcre == "C")
     {
-        cin >> logpass;
-        if (bank.get_customers()->at(index)->getPassword() == logpass)
-        {
-            cout << "Logged in succesfully" << "\n";
-            return index;
-        }
-        else
-        {
-            cout << "Wrong Password!" << "\n";
-        }
+        index = createAccount();
+        return index;
     }
-    cout << "Login Failed! Account Blocked!" << "\n";
-    isRunning = false;
     return -1;
 }
 
-void createAccount()
-{
-    string tempname, tempsurname, temppass;
-    double tempbal;
-    string isworker;
-    cout <<"Please enter your Name: ";
-    cin >> tempname;
-    cout <<"Please enter your Surname: ";
-    cin >> tempsurname;
-    cout <<"Please enter your Password: ";
-    cin >> temppass;
-    cout <<"How much money do you want to deposit first: ";
-    cin >> tempbal;
-    cout << "Are you working for us? [Y/n]: ";
-    cin >> isworker;
-    while (isworker != "Y" || isworker != "n")
-    {
-        cout << "You entered a wrong key. Please Try Again: ";
-        cin >> isworker;
-    }
-    if (isworker == "Y")
-    {
-        bank.addWorker(tempname, tempsurname, temppass, tempbal);
-    }
-    else
-    {
-        bank.addCustomer(tempname, tempsurname, temppass, tempbal);
-    }
-    cout << "Thanks for creating account!" << "\n";
-}
+
 
 int main()
 {
@@ -92,23 +131,86 @@ int main()
     while (isRunning)
     {
         cout << "Please select an operation" << "\n";
-        cout << "1. Create an account" << "\n";
-        cout << "2. Delete Your account" << "\n";
-        cout << "3. Deposit" << "\n";
-        cout << "4. Withdraw" << "\n";
-        cout << "X. Exit" << "\n";
+        cout << "1. Deposit" << "\n";
+        cout << "2. Withdraw" << "\n";
+        cout << "3. Delete Your account" << "\n";
+        if (isbankworker)
+        {
+            cout << "4. Get Salary" << "\n";
+        }
+        cout << "9. Exit" << "\n";
         cin >> choice;
+        string sure;
         switch (choice)
         {
         case 1:
-            createAccount();
+            int money_to_deposit;
+            cout << "How much money do you want to deposit?" << "\n";
+            cin >> money_to_deposit;
+            if (isbankworker)
+            {
+                bank.get_workers()->at(index)->deposit(money_to_deposit);
+            }
+            else
+            {
+                bank.get_customers()->at(index)->deposit(money_to_deposit);
+            }
             break;
         case 2:
-            deleteAccount();
+            int money_to_withdraw;
+            cout << "How much money do you want to withdraw?" << "\n";
+            cin >> money_to_withdraw;
+            if (isbankworker)
+            {
+                bank.get_workers()->at(index)->withdraw(money_to_withdraw);
+            }
+            else
+            {
+                bank.get_customers()->at(index)->withdraw(money_to_withdraw);
+            }
             break;
-        
+        case 3:
+            cout << "Are you sure deleting your account? [Y/n]" << "\n";
+            cin >> sure;
+            while (sure != "Y" || sure != "n")
+            {
+                cout << "You entered an unvalid input. Please try again." << "\n";
+                cin >> sure;
+            }
+            if (sure == "Y")
+            {
+                if (isbankworker)
+                {
+                    bank.get_workers()->erase(bank.get_workers()->begin() + index);
+                    isRunning = false;
+                }
+                else
+                {
+                    bank.get_customers()->erase(bank.get_customers()->begin() + index);
+                    isRunning = false;
+                }
+            }
+            else
+            {
+                cout << "Thanks for not deleting your account" << "\n";
+            }
+            break;
+        case 4:
+            if (isbankworker)
+            {
+                bank.get_workers()->at(index)->getSalary();
+            }
+            else
+            {
+                cout << "You entered an invalid input. Please try again.";
+            }
+        case 9:
+            isRunning = false;
+            break;
         default:
+            cout << "You entered an invalid input. Please try again.";
             break;
         }
     }
+    bank.writePeople("People.csv");
 }

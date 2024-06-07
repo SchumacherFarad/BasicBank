@@ -1,5 +1,6 @@
 #include "Customer.hpp"
 
+
 const int STARTER_SALARY = 1000;
 
 class Worker: public Customer{
