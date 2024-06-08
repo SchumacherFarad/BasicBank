@@ -142,20 +142,38 @@ int main()
     bank.readPeople("O:/ITU/GITHUB/BasicBank/BasicBank/src/People.csv");
     cout << "Welcome to the YatırBank" << "\n\n";
     int index = login();
+    if (isbankworker)
+    {
+        cout << "Welcome, "<< bank.get_workers()->at(index)->getName() << " " << bank.get_workers()->at(index)->getSurname() << "\n";
+    }
+    else
+    {
+        cout << "Welcome, "<< bank.get_customers()->at(index)->getName() << " " << bank.get_customers()->at(index)->getSurname() << "\n";
+    }
     int choice;
     while (isRunning)
     {
-        cout << "Please select an operation" << "\n";
+        if (isbankworker)
+        {
+            cout << "You have " << bank.get_workers()->at(index)->getBalance()<< " $ in your account.\n"; 
+        }
+        else
+        {
+            cout << "You have " << bank.get_customers()->at(index)->getBalance()<< " $ in your account.\n"; 
+        }
+        cout << "Please select an operation." << "\n";
         cout << "1. Deposit" << "\n";
         cout << "2. Withdraw" << "\n";
         cout << "3. Delete Your account" << "\n";
+        cout << "4. Transfer Money" << "\n";
         if (isbankworker)
         {
-            cout << "4. Get Salary" << "\n";
+            cout << "5. Get Salary" << "\n";
         }
         cout << "9. Exit" << "\n";
         cin >> choice;
         string sure;
+        string iban_to_transfer;
         switch (choice)
         {
         case 1:
@@ -211,6 +229,14 @@ int main()
             }
             break;
         case 4:
+            double money_to_transfer;
+            cout << "Please enter the IBAN of the account that you want to transfer your money to: " << "\n";
+            cin >> iban_to_transfer;
+            cout << "Please enter the amount of money you want to transfer to: " << "\n";
+            cin >> money_to_transfer;
+            bank.transferMoney(isbankworker, index, iban_to_transfer, money_to_transfer);
+            break;
+        case 5:
             if (isbankworker)
             {
                 bank.get_workers()->at(index)->addSalarytoBalance();

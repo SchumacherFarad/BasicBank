@@ -1,8 +1,8 @@
 #include <iostream>
 #include "Customer.hpp"
 
-
-Customer::Customer(double balance, string iban, string name, string surname, string password){
+Customer::Customer(double balance, string iban, string name, string surname, string password)
+{
     this->type = "Customer";
     this->balance = balance;
     this->iban = iban;
@@ -11,7 +11,8 @@ Customer::Customer(double balance, string iban, string name, string surname, str
     this->password = password;
 }
 
-Customer::Customer(){
+Customer::Customer()
+{
     this->type = "Customer";
     this->name = "";
     this->surname = "";
@@ -19,34 +20,49 @@ Customer::Customer(){
     this->balance = 0.00;
 }
 
-void Customer::deposit(double money){
+void Customer::deposit(double money)
+{
     this->balance += money;
 }
 
-void Customer::withdraw(double money){
-    this->balance -= money;
+void Customer::withdraw(double money)
+{
+    if (money <= balance)
+    {
+        this->balance -= money;
+    }
+    else
+    {
+        cout << "Your account does not have that much money. Please try again." << "\n";
+    }
 }
 
-string Customer::getType(){
+string Customer::getType()
+{
     return this->type;
 }
 
-double Customer::getBalance(){
+double Customer::getBalance()
+{
     return this->balance;
 }
 
-string Customer::getIban(){
+string Customer::getIban()
+{
     return this->iban;
 }
 
-string Customer::getName(){
+string Customer::getName()
+{
     return this->name;
 }
 
-string Customer::getSurname(){
+string Customer::getSurname()
+{
     return this->surname;
 }
 
-string Customer::getPassword(){
+string Customer::getPassword()
+{
     return this->password;
 }

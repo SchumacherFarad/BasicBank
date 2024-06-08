@@ -92,3 +92,65 @@ Bank::~Bank(){
     customers.clear();
     workers.clear();
 }
+
+void Bank::transferMoney(bool isworker, int index, string iban_to_transfer, double money_to_transfer){
+    bool transfer_isworker;
+    int indextransfer;
+    int balancefirst = isworker ? get_workers()->at(index)->getBalance() : get_customers()->at(index)->getBalance(); 
+    for (int i = 0; i < static_cast<int>(get_customers()->size()); i++)
+    {
+        if(iban_to_transfer == get_customers()->at(i)->getIban()){
+            transfer_isworker = false;
+            indextransfer= i;
+        }
+    }
+    for (int i = 0; i < static_cast<int>(get_workers()->size()); i++)
+    {
+        if (iban_to_transfer == get_workers()->at(i)->getIban()){
+            transfer_isworker = true;
+            indextransfer = i;
+        }
+    }
+    if (isworker)
+    {
+        if (transfer_isworker)
+        {
+            get_workers()->at(index)->withdraw(money_to_transfer);
+            if (get_workers()->at(index)->getBalance() != balancefirst)
+            {
+                get_workers()->at(indextransfer)->deposit(money_to_transfer);
+                cout << "Transaction has been completed successfully. \n";
+            }
+        }
+        else
+        {
+            get_workers()->at(index)->withdraw(money_to_transfer);
+            if (get_workers()->at(index)->getBalance() != balancefirst)
+            {
+                get_customers()->at(indextransfer)->deposit(money_to_transfer);
+                cout << "Transaction has been completed successfully. \n";
+            }
+        }
+    }
+    else
+    {
+        if (transfer_isworker)
+        {
+            get_customers()->at(index)->withdraw(money_to_transfer);
+            if (get_customers()->at(index)->getBalance() != balancefirst)
+            {
+                get_workers()->at(indextransfer)->deposit(money_to_transfer);
+                cout << "Transaction has been completed successfully. \n";
+            }
+        }
+        else
+        {
+            get_customers()->at(index)->withdraw(money_to_transfer);
+            if (get_customers()->at(index)->getBalance() != balancefirst)
+            {
+                get_customers()->at(indextransfer)->deposit(money_to_transfer);
+                cout << "Transaction has been completed successfully. \n";
+            }
+        }
+    }
+}
