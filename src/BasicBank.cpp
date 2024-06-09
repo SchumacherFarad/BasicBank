@@ -205,7 +205,7 @@ int main()
         case 3:
             cout << "Are you sure deleting your account? [Y/n]" << "\n";
             cin >> sure;
-            while (sure != "Y" || sure != "n")
+            while (sure != "Y" && sure != "n")
             {
                 cout << "You entered an unvalid input. Please try again." << "\n";
                 cin >> sure;

@@ -9,10 +9,10 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "-I",
-                "O:/ITU/GITHUB/BasicBank/BasicBank/include",
-                "O:/ITU/GITHUB/BasicBank/BasicBank/src/*.cpp",
+                "${workspaceRoot}/include",
+                "${workspaceRoot}/src/*.cpp",
                 "-o",
-                "O:/ITU/GITHUB/BasicBank/BasicBank/src/BasicBank.exe"
+                "${workspaceRoot}/src/BasicBank.exe"
             ],
             "options": {
                 "cwd": "c:\\msys64\\ucrt64\\bin"
